@@ -1,0 +1,6 @@
+*.pyc
+*~
+.project
+.settings
+.pydevproject
+carevenv
