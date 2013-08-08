@@ -1,5 +1,5 @@
 import struct
-import os, sys
+import os, sys, glob
 
 def read_utf16_str (f, offset=-1, len=2):
     if offset >= 0:
@@ -71,14 +71,23 @@ def store(records, f):
         f.write("x:1\n")
 
 def main ():
-    if len (sys.argv) != 3:
-        print "Unknown Option \n usage: python %s file.scel new.txt" %(sys.argv[0])
-        exit (1)
+	if len (sys.argv) != 3:
+		print "Unknown Option \n usage: python %s file.scel new.txt" %(sys.argv[0])
+		exit (1)
+	
+	#Specify the param of scel path as a directory, you can place many scel file in this dirctory, the this process will combine the result in one txt file
+	if os.path.isdir(sys.argv[1]):
+		for fileName in glob.glob(sys.argv[1] + '*.scel'):
+			print fileName
+			generator = get_word_from_sogou_cell_dict(fileName)
+			with open(sys.argv[2], "a") as f:
+				store(generator, f)
 
-    generator = get_word_from_sogou_cell_dict (sys.argv[1])
-    with open(sys.argv[2], "w") as f:
-        store(generator, f)
-    #showtxt(generator)
+	else:
+		generator = get_word_from_sogou_cell_dict (sys.argv[1])
+		with open(sys.argv[2], "w") as f:
+			store(generator, f)
+			#showtxt(generator)
 
 if __name__ == "__main__":
     main()
